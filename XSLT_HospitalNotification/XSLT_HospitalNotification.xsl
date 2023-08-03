@@ -4,13 +4,13 @@
     version="1.0" exclude-result-prefixes="fhir">
     <xsl:output media-type="text/html"/>  
     
-    <xsl:include href="HNSubjectInfo.xsl"/>
-    <xsl:include href="Format_date.xsl"/>
-    <xsl:include href="type_of_HN.xsl"/>
-    <xsl:include href="Sender_Sor_ID.xsl"/>
-    <xsl:include href="show_sender_name.xsl"/>
-    <xsl:include href="Show_sender_addres_field.xsl"/>
-    <xsl:include href="show_sender_addres.xsl"/>
+    <xsl:include href="/Git_hub/FHIR-stylesheets/XSLT_Core_profiles/Patient/show_subject_identifier.xsl"/>
+    <xsl:include href="/Git_hub/FHIR-stylesheets/XSLT_Core_profiles/Message/format_date.xsl"/>
+    <xsl:include href="/Git_hub/FHIR-stylesheets/XSLT_HospitalNotification/show_type_of_hospital_notification.xsl"/>
+    <xsl:include href="/Git_hub/FHIR-stylesheets/XSLT_Core_profiles/Sender_Organization/show_sender_sor_id.xsl"/>
+    <xsl:include href="/Git_hub/FHIR-stylesheets/XSLT_Core_profiles/Sender_Organization/show_sender_name.xsl"/>
+    <xsl:include href="/Git_hub/FHIR-stylesheets/XSLT_Core_profiles/Sender_Organization/Show_sender_addres_field.xsl"/>
+    <xsl:include href="/Git_hub/FHIR-stylesheets/XSLT_Core_profiles/Sender_Organization/show_sender_addres.xsl"/>
     
  
     
