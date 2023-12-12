@@ -8,14 +8,19 @@
             <xsl:value-of select="substring(fhir:entry/fhir:resource/fhir:MessageHeader/fhir:sender/fhir:reference/@value,14,49)"/>
         </xsl:variable>
         
-        <xsl:choose>
+        <xsl:for-each select="fhir:entry/fhir:resource/fhir:Organization">
+            <xsl:if test="fhir:id/@value=$OrgID">
+                <xsl:value-of select="fhir:address/fhir:line/@value"/>
+                <xsl:value-of select="','"/>
+                <xsl:value-of select="fhir:address/fhir:city/@value"/>
+                <xsl:value-of select="','"/>
+                <xsl:value-of select="fhir:address/fhir:postalCode/@value"/>
+            </xsl:if>
+        </xsl:for-each>
+       <!--<xsl:choose>
             <xsl:when test="fhir:entry/fhir:resource/fhir:Organization/fhir:address=true()">
-                <xsl:for-each select="fhir:entry/fhir:resource/fhir:Organization">
-                    <xsl:if test="fhir:id/@value=$OrgID">
-                        <xsl:value-of select="fhir:address/@value"/>
-                    </xsl:if>
-                </xsl:for-each>
+                
             </xsl:when>
-        </xsl:choose> 
+        </xsl:choose> --> 
     </xsl:template>
 </xsl:stylesheet>
