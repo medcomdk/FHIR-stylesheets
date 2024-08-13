@@ -19,7 +19,8 @@
                 <xsl:apply-templates select="fhir:Patient"/>
                 
                 <!-- Anden del: Available Non-Must Support Information and Narrative Content -->
-                <h1>Available Non-Must Support Information and Narrative Content</h1>
+                <h1>All Available Information</h1>
+                <p>This section includes both the must support information and any additional content that may not be part of the standard. It ensures that all data provided in the XML file is displayed, regardless of its inclusion in the must support section.</p>
                 <xsl:apply-templates select="fhir:Patient" mode="showAll"/>
             </body>
         </html>
@@ -32,8 +33,7 @@
     
     <!-- Template til Must Support indhold -->
     <xsl:template match="fhir:Patient">
-        <!-- Identifiers, Names, Telecom, etc. as in the previous section -->
-        <h2>Identifiers</h2>
+        <h2>Identifier</h2>
         <xsl:for-each select="fhir:identifier">
             <p>
                 <strong>System:</strong> <xsl:value-of select="fhir:system/@value"/><br/>
@@ -53,26 +53,19 @@
             </p>
         </xsl:for-each>
         
-        <h2>Contact Information</h2>
+        <h2>Telecom</h2>
         <xsl:for-each select="fhir:telecom">
             <p>
                 <strong>System:</strong>
-                <xsl:choose>
-                    <xsl:when test="fhir:system/@value='phone'">Phone</xsl:when>
-                    <xsl:when test="fhir:system/@value='fax'">Fax</xsl:when>
-                    <xsl:when test="fhir:system/@value='email'">Email</xsl:when>
-                    <xsl:when test="fhir:system/@value='pager'">Pager</xsl:when>
-                    <xsl:when test="fhir:system/@value='url'">URL</xsl:when>
-                    <xsl:when test="fhir:system/@value='sms'">SMS</xsl:when>
-                    <xsl:when test="fhir:system/@value='other'">Other</xsl:when>
-                </xsl:choose>: 
-                <xsl:value-of select="fhir:value/@value"/><br/>
+                <xsl:value-of select="fhir:system/@value"/><br/>
+                <strong>Value:</strong> <xsl:value-of select="fhir:value/@value"/><br/>
                 <strong>Use:</strong> <xsl:value-of select="fhir:use/@value"/>
             </p>
         </xsl:for-each>
         
-        <h2>Demographics</h2>
-        <p><strong>Deceased:</strong> 
+        <h2>DeceasedBoolean</h2>
+        <p>
+            <strong>Deceased:</strong> 
             <xsl:value-of select="fhir:deceasedBoolean/@value"/>
         </p>
         
@@ -80,28 +73,45 @@
         <xsl:for-each select="fhir:address">
             <p>
                 <strong>Use:</strong> <xsl:value-of select="fhir:use/@value"/><br/>
-                <strong>Address:</strong> 
+                <strong>Line:</strong>
                 <xsl:for-each select="fhir:line">
-                    <xsl:value-of select="@value"/><xsl:text>, </xsl:text>
+                    <xsl:value-of select="@value"/><br/>
                 </xsl:for-each>
-                <xsl:value-of select="fhir:city/@value"/><xsl:text>, </xsl:text>
-                <xsl:value-of select="fhir:postalCode/@value"/><xsl:text>, </xsl:text>
-                <xsl:value-of select="fhir:country/@value"/>
+                <strong>City:</strong> <xsl:value-of select="fhir:city/@value"/><br/>
+                <strong>Postal Code:</strong> <xsl:value-of select="fhir:postalCode/@value"/>
             </p>
         </xsl:for-each>
     </xsl:template>
     
     <!-- Template til at vise alt indhold i del 2 -->
     <xsl:template match="fhir:Patient/*" mode="showAll">
-        <xsl:if test="not(self::fhir:id or self::fhir:identifier or self::fhir:name or self::fhir:telecom or self::fhir:deceasedBoolean or self::fhir:address)">
-            <h2><xsl:value-of select="name()"/></h2>
-            <xsl:apply-templates select="@* | *"/>
-        </xsl:if>
-    </xsl:template>
-    
-    <!-- Template til at vise alle elementer og attributter generisk -->
-    <xsl:template match="@* | *">
-        <strong><xsl:value-of select="name()"/>:</strong> <xsl:value-of select="normalize-space(.)"/><br/>
+        <h2><xsl:value-of select="name()"/></h2>
         <xsl:apply-templates select="@* | *"/>
     </xsl:template>
+    
+    <!-- Template til at vise attributter og underordnede elementer med indryk -->
+    <xsl:template match="*">
+        <div style="margin-left:20px;">
+            <strong><xsl:value-of select="name()"/>:</strong>
+            
+            <!-- Vis attributter -->
+            <xsl:for-each select="@*">
+                <div style="margin-left:20px;">
+                    <strong><xsl:value-of select="name()"/>:</strong> 
+                    <xsl:value-of select="."/>
+                </div>
+            </xsl:for-each>
+            
+            <!-- Vis tekstindhold, hvis tilstede -->
+            <xsl:if test="normalize-space(.)">
+                <div style="margin-left:20px;">
+                    <xsl:value-of select="normalize-space(.)"/>
+                </div>
+            </xsl:if>
+            
+            <!-- Rekursivt anvend skabeloner på underordnede elementer -->
+            <xsl:apply-templates select="*"/>
+        </div>
+    </xsl:template>
+    
 </xsl:stylesheet>
