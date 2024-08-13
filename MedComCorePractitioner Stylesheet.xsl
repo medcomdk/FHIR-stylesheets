@@ -12,7 +12,7 @@
                 
                 <!-- Display Practitioner ID -->
                 <div>
-                    <strong>id:</strong>
+                    <strong>id: </strong>
                     <xsl:value-of select="fhir:Practitioner/fhir:id/@value"/>
                 </div>
                 
@@ -21,18 +21,18 @@
                 <!-- Display name details -->
                 <div>
                     <strong style="font-size:1.2em;">Name</strong>
-                    <div><strong>Use:</strong> <xsl:value-of select="fhir:Practitioner/fhir:name/fhir:use/@value"/></div>
-                    <div><strong>Family:</strong> <xsl:value-of select="fhir:Practitioner/fhir:name/fhir:family/@value"/></div>
-                    <div><strong>Given:</strong> 
+                    <div><strong>Use: </strong> <xsl:value-of select="fhir:Practitioner/fhir:name/fhir:use/@value"/></div>
+                    <div><strong>Family: </strong> <xsl:value-of select="fhir:Practitioner/fhir:name/fhir:family/@value"/></div>
+                    <div><strong>Given: </strong> 
                         <xsl:for-each select="fhir:Practitioner/fhir:name/fhir:given">
                             <xsl:value-of select="@value"/>
                             <xsl:if test="position() != last()">, </xsl:if>
                         </xsl:for-each>
                     </div>
-                    <div><strong>Prefix:</strong> <xsl:value-of select="fhir:Practitioner/fhir:name/fhir:prefix/@value"/></div>
-                    <div><strong>Suffix:</strong> <xsl:value-of select="fhir:Practitioner/fhir:name/fhir:suffix/@value"/></div>
-                    <div><strong>Period Start:</strong> <xsl:value-of select="fhir:Practitioner/fhir:name/fhir:period/fhir:start/@value"/></div>
-                    <div><strong>Period End:</strong> <xsl:value-of select="fhir:Practitioner/fhir:name/fhir:period/fhir:end/@value"/></div>
+                    <div><strong>Prefix: </strong> <xsl:value-of select="fhir:Practitioner/fhir:name/fhir:prefix/@value"/></div>
+                    <div><strong>Suffix: </strong> <xsl:value-of select="fhir:Practitioner/fhir:name/fhir:suffix/@value"/></div>
+                    <div><strong>Period Start: </strong> <xsl:value-of select="fhir:Practitioner/fhir:name/fhir:period/fhir:start/@value"/></div>
+                    <div><strong>Period End: </strong> <xsl:value-of select="fhir:Practitioner/fhir:name/fhir:period/fhir:end/@value"/></div>
                 </div>
                 
                 <!-- Part 2: Display all other data -->
@@ -43,28 +43,36 @@
         </html>
     </xsl:template>
     
-    <!-- Template til at vise attributter og underordnede elementer med indryk -->
+    <!-- Template to display attributes and child elements -->
     <xsl:template match="*">
         <div style="margin-left:20px;">
-            <strong><xsl:value-of select="name()"/>:</strong>
+            <!-- Handling of elements and value attributes -->
+            <xsl:choose>
+                <xsl:when test="@value">
+                    <strong><xsl:value-of select="name()"/>: </strong> <xsl:value-of select="@value"/>
+                </xsl:when>
+                <xsl:otherwise>
+                    <strong><xsl:value-of select="name()"/>: </strong>
+                    <xsl:apply-templates select="@*"/>
+                </xsl:otherwise>
+            </xsl:choose>
             
-            <!-- Vis attributter -->
-            <xsl:for-each select="@*">
-                <div style="margin-left:20px;">
-                    <strong><xsl:value-of select="name()"/>:</strong> 
-                    <xsl:value-of select="."/>
-                </div>
-            </xsl:for-each>
-            
-            <!-- Vis tekstindhold, hvis tilstede -->
+            <!-- Display text content -->
             <xsl:if test="normalize-space(.)">
                 <div style="margin-left:20px;">
                     <xsl:value-of select="normalize-space(.)"/>
                 </div>
             </xsl:if>
             
-            <!-- Rekursivt anvend skabeloner på underordnede elementer -->
+            <!-- Recursively apply templates to child elements -->
             <xsl:apply-templates select="*"/>
+        </div>
+    </xsl:template>
+    
+    <!-- Template to display attributes other than value -->
+    <xsl:template match="@*">
+        <div style="margin-left:20px;">
+            <strong><xsl:value-of select="name()"/>: </strong> <xsl:value-of select="."/>
         </div>
     </xsl:template>
     
